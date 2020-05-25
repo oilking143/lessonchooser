@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">TestSchoolSchedule</string>
+
+
+    <string-array name="spinnername">
+        <item>阿足</item>
+        <item>阿蹲</item>
+        <item>柴姐</item>
+    </string-array>
 </resources>

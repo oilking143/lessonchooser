@@ -1,17 +1,20 @@
 package com.example.testschoolschedule.Activity;
 
 import android.content.ClipData;
+import android.content.ClipDescription;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.SystemClock;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
+import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.testschoolschedule.R;
@@ -19,11 +22,9 @@ import com.example.testschoolschedule.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends BaseActivity implements View.OnLongClickListener{
+public class MainActivity extends BaseActivity implements View.OnLongClickListener, View.OnDragListener {
 
 
-    @BindView(R.id.react_area)
-    LinearLayout reactArea;
     @BindView(R.id.unit1)
     Button unit1;
     @BindView(R.id.unit2)
@@ -32,6 +33,25 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
     Button unit3;
     @BindView(R.id.motherlayout)
     ConstraintLayout motherlayout;
+    @BindView(R.id.childTest1)
+    LinearLayout childTest1;
+    @BindView(R.id.childTest2)
+    LinearLayout childTest2;
+    @BindView(R.id.childTest3)
+    LinearLayout childTest3;
+    @BindView(R.id.childTest4)
+    LinearLayout childTest4;
+    @BindView(R.id.childTest5)
+    LinearLayout childTest5;
+    @BindView(R.id.childTest6)
+    LinearLayout childTest6;
+    @BindView(R.id.childTest7)
+    LinearLayout childTest7;
+    @BindView(R.id.childTest8)
+    LinearLayout childTest8;
+    @BindView(R.id.studentList)
+    AppCompatSpinner studentList;
+    private Drawable oldbg;
 
 
     @Override
@@ -46,8 +66,11 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
 
     @Override
     public void init() {
-
+        String[] mItems = getResources().getStringArray(R.array.spinnername);
+        ArrayAdapter<String> _Adapter=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, mItems);
+        studentList.setAdapter(_Adapter);
     }
+
 
     @Override
     public void setListeners() {
@@ -55,70 +78,14 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
         unit1.setOnLongClickListener(this);
         unit2.setOnLongClickListener(this);
         unit3.setOnLongClickListener(this);
-        reactArea.setOnDragListener(new View.OnDragListener() {
-            @Override
-            public boolean onDrag(View v, DragEvent event) {
-                int action = event.getAction();
-                switch (action) {
-                    case DragEvent.ACTION_DRAG_STARTED:
-                        Log.i("111", "开始拖拽");
-
-                        break;
-                    case DragEvent.ACTION_DRAG_ENDED:
-                        Log.i("111", "结束拖拽");
-
-                        break;
-                    case DragEvent.ACTION_DRAG_ENTERED:
-                        Log.i("111", "拖拽的view进入监听的view时");
-                        reactArea.setBackgroundColor(0xffe19830);
-                        break;
-                    case DragEvent.ACTION_DRAG_EXITED:
-                        Log.i("111", "拖拽的view离开监听的view时");
-                        reactArea.removeAllViews();
-                        reactArea.setBackgroundColor(0xffcd3457);
-                        break;
-                    case DragEvent.ACTION_DRAG_LOCATION:
-                        float x = event.getX();
-                        float y = event.getY();
-                        long l = SystemClock.currentThreadTimeMillis();
-                        Log.i("111", "拖拽的view在BLUE中的位置:x =" + x + ",y=" + y);
-                        break;
-                    case DragEvent.ACTION_DROP:
-                        Log.i("111", "释放拖拽的view");
-                        Button localState = (Button) event.getLocalState();
-                        ((ViewGroup) localState.getParent()).removeView(localState);
-
-                        switch (localState.getId())
-                        {
-                            case R.id.unit1:
-                                reactArea.setBackgroundColor(0xffab3598);
-                                break;
-
-                            case R.id.unit2:
-                                reactArea.setBackgroundColor(0xff26cc98);
-                                break;
-
-                            case R.id.unit3:
-                                reactArea.setBackgroundColor(0xff8a6c5e);
-                                break;
-                        }
-
-
-                        motherlayout.addView(localState);
-                        break;
-                }
-
-                return true;
-            }
-        });
-
-        reactArea.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                reactArea.setBackgroundColor(0xffcd3457);
-            }
-        });
-
+        childTest1.setOnDragListener(this);
+        childTest2.setOnDragListener(this);
+        childTest3.setOnDragListener(this);
+        childTest4.setOnDragListener(this);
+        childTest5.setOnDragListener(this);
+        childTest6.setOnDragListener(this);
+        childTest7.setOnDragListener(this);
+        childTest8.setOnDragListener(this);
 
     }
 
@@ -126,18 +93,14 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
     @Override
     public boolean onLongClick(View v) {
 
-        ClipData data = ClipData.newPlainText("Label", "我是文本内容！");
-        switch (v.getId())
-        {
+        ClipData data = ClipData.newPlainText("Label", "課程選擇成功");
+        switch (v.getId()) {
             case R.id.unit1:
-                //设置震动反馈
+
                 unit1.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
 
-                // 创建DragShadowBuilder，我把控件本身传进去
                 View.DragShadowBuilder builder = new View.DragShadowBuilder(unit1);
-                // 剪切板数据，可以在DragEvent.ACTION_DROP方法的时候获取。
 
-                // 开始拖拽
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     unit1.startDragAndDrop(data, builder, unit1, 0);
                 } else {
@@ -146,7 +109,6 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
                 break;
 
             case R.id.unit2:
-                //设置震动反馈
                 unit2.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
 
                 View.DragShadowBuilder builder2 = new View.DragShadowBuilder(unit2);
@@ -159,7 +121,6 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
                 break;
 
             case R.id.unit3:
-                //设置震动反馈
                 unit3.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
 
                 View.DragShadowBuilder builder3 = new View.DragShadowBuilder(unit3);
@@ -175,4 +136,83 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
 
         return true;
     }
+
+    @Override
+    public boolean onDrag(View view, DragEvent event) {
+
+        int action = event.getAction();
+        switch (action) {
+            case DragEvent.ACTION_DRAG_STARTED:
+                if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
+
+                    return true;
+
+                }
+                break;
+
+            case DragEvent.ACTION_DRAG_ENTERED:
+
+                if (view.getBackground() == null) {
+                    view.setBackgroundColor(0xff23de36);
+                } else {
+                    oldbg = view.getBackground();
+                    view.setBackgroundColor(0xff23de36);
+                }
+
+
+                break;
+            case DragEvent.ACTION_DRAG_LOCATION:
+                break;
+            case DragEvent.ACTION_DRAG_EXITED:
+
+                view.setBackground(oldbg);
+                oldbg = null;
+                break;
+            case DragEvent.ACTION_DROP:
+
+                ClipData.Item item = event.getClipData().getItemAt(0);
+                String dragData = item.getText().toString();
+                view.invalidate();
+                View v = (View) event.getLocalState();
+                LinearLayout container = (LinearLayout) view;
+                switch (v.getId()) {
+                    case R.id.unit1:
+
+                        Toast.makeText(this, "課程A選課成功" + dragData, Toast.LENGTH_SHORT).show();
+                        container.setBackgroundResource(R.drawable.lessonble);
+                        break;
+
+                    case R.id.unit2:
+
+                        Toast.makeText(this, "課程B選課成功" + dragData, Toast.LENGTH_SHORT).show();
+                        container.setBackgroundResource(R.drawable.lessongre);
+                        break;
+
+                    case R.id.unit3:
+
+                        Toast.makeText(this, "課程C選課成功" + dragData, Toast.LENGTH_SHORT).show();
+                        container.setBackgroundResource(R.drawable.lessonylw);
+                        break;
+                }
+
+//                ViewGroup owner = (ViewGroup) v.getParent();
+//                owner.removeView(v);
+//                LinearLayout container = (LinearLayout) view;
+//                container.addView(v);
+                v.setVisibility(View.VISIBLE);
+
+
+                break;
+            case DragEvent.ACTION_DRAG_ENDED:
+
+
+                view.invalidate();
+
+                break;
+        }
+        return true;
+    }
+
+
+
 }
