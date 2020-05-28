@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.DragEvent;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -18,6 +17,7 @@ import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.testschoolschedule.R;
+import com.example.testschoolschedule.model.ApiServer;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -69,6 +69,7 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
         String[] mItems = getResources().getStringArray(R.array.spinnername);
         ArrayAdapter<String> _Adapter=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, mItems);
         studentList.setAdapter(_Adapter);
+        ApiServer.getInstance().getLessonApis();
     }
 
 
