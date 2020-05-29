@@ -5,6 +5,7 @@ import android.content.ClipDescription;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
@@ -16,8 +17,13 @@ import android.widget.Toast;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.example.testschoolschedule.Event.LessonEvent;
 import com.example.testschoolschedule.R;
 import com.example.testschoolschedule.model.ApiServer;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -72,6 +78,21 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
         ApiServer.getInstance().getLessonApis();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+
+
+    }
 
     @Override
     public void setListeners() {
@@ -214,6 +235,17 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
         return true;
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    synchronized public void onDZApiCounts(LessonEvent event) {
 
+        Log.e("LessonEvent", "" + event.getStatus());
+        Log.e("LessonEvent", "" + event.getResponse().getStudentA()[0].getLesson());
+
+        switch (event.getStatus()) {
+
+        }
+
+
+    }
 
 }

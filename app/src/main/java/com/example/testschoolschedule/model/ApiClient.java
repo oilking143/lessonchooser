@@ -18,6 +18,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.GET;
+import retrofit2.http.Url;
 
 public class ApiClient {
     private static ApiClient sApiClient = null;
@@ -70,7 +71,7 @@ public class ApiClient {
 
     public interface Api {
 
-        @GET(".")
+        @GET("exec")
         Single<retrofit2.Response<LessonResponse>> getLesson();
     }
 

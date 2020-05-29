@@ -2,7 +2,10 @@ package com.example.testschoolschedule.model;
 
 import android.util.Log;
 
+import com.example.testschoolschedule.Event.LessonEvent;
 import com.example.testschoolschedule.model.server.LessonResponse;
+
+import org.greenrobot.eventbus.EventBus;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -35,12 +38,11 @@ public class ApiServer {
                     @Override
                     public void onSuccess(Response<LessonResponse> getAttentionCounts) {
                         LessonResponse response=getAttentionCounts.body();
-                        Log.d("Response",response.getStudentA().toString());
-//                        EventBus.getDefault().post(new DZApiCountEvent(Constant.AttentionTag,response.getMessage(),response));
+                        EventBus.getDefault().post(new LessonEvent(0,response.toString(),response));
                     }
                     @Override
                     public void onError(Throwable e) {
-//                        EventBus.getDefault().post(new DZApiCountEvent(Constant.RESPONSE_FAIL_NET,"Fail",null));
+                        EventBus.getDefault().post(new LessonEvent(1,"Fail",null));
                     }
                 }));
     }

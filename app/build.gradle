@@ -12,7 +12,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField 'String', 'BASE_URL', '"https://script.google.com/macros/s/AKfycbxw35tghKlcpZcec66rB9EPzPARE43rPPj577hwisaNbrR81lU/exec/"'
+        buildConfigField 'String', 'BASE_URL', '"https://script.google.com/macros/s/AKfycbxw35tghKlcpZcec66rB9EPzPARE43rPPj577hwisaNbrR81lU/"'
 
     }
     buildTypes {
@@ -43,6 +43,7 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.6.0'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.x.x'
+    implementation 'org.greenrobot:eventbus:3.2.0'
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.7.2'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
