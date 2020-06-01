@@ -2,6 +2,9 @@ package com.example.testschoolschedule.Activity;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -9,14 +12,22 @@ import android.util.Log;
 import android.view.DragEvent;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.testschoolschedule.Event.LessonEvent;
 import com.example.testschoolschedule.R;
 import com.example.testschoolschedule.model.ApiServer;
@@ -25,10 +36,15 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends BaseActivity implements View.OnLongClickListener, View.OnDragListener {
+public class MainActivity extends BaseActivity implements View.OnLongClickListener, View.OnDragListener, Spinner.OnItemSelectedListener {
 
 
     @BindView(R.id.unit1)
@@ -58,6 +74,7 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
     @BindView(R.id.studentList)
     AppCompatSpinner studentList;
     private Drawable oldbg;
+    private LessonEvent response;
 
 
     @Override
@@ -90,8 +107,6 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
-
-
     }
 
     @Override
@@ -108,6 +123,7 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
         childTest6.setOnDragListener(this);
         childTest7.setOnDragListener(this);
         childTest8.setOnDragListener(this);
+        studentList.setOnItemSelectedListener(this);
 
     }
 
@@ -193,27 +209,69 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
             case DragEvent.ACTION_DROP:
 
                 ClipData.Item item = event.getClipData().getItemAt(0);
-                String dragData = item.getText().toString();
                 view.invalidate();
                 View v = (View) event.getLocalState();
                 LinearLayout container = (LinearLayout) view;
                 switch (v.getId()) {
                     case R.id.unit1:
 
-                        Toast.makeText(this, "課程A選課成功" + dragData, Toast.LENGTH_SHORT).show();
-                        container.setBackgroundResource(R.drawable.lessonble);
+                        Glide.with(this)
+                                .asBitmap()
+                                .load(unit1.getTag().toString())
+                                .into(new CustomTarget<Bitmap>() {
+                                    @Override
+                                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                        ImageView childView = new ImageView(MainActivity.this);
+                                        childView.setImageBitmap(resource);
+                                        container.addView(childView);
+                                    }
+
+                                    @Override
+                                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                                    }
+                                });
+
                         break;
 
                     case R.id.unit2:
 
-                        Toast.makeText(this, "課程B選課成功" + dragData, Toast.LENGTH_SHORT).show();
-                        container.setBackgroundResource(R.drawable.lessongre);
+                        Glide.with(this)
+                                .asBitmap()
+                                .load(unit2.getTag().toString())
+                                .into(new CustomTarget<Bitmap>() {
+                                    @Override
+                                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                        ImageView childView = new ImageView(MainActivity.this);
+                                        childView.setImageBitmap(resource);
+                                        container.addView(childView);
+                                    }
+
+                                    @Override
+                                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                                    }
+                                });
                         break;
 
                     case R.id.unit3:
 
-                        Toast.makeText(this, "課程C選課成功" + dragData, Toast.LENGTH_SHORT).show();
-                        container.setBackgroundResource(R.drawable.lessonylw);
+                        Glide.with(this)
+                                .asBitmap()
+                                .load(unit3.getTag().toString())
+                                .into(new CustomTarget<Bitmap>() {
+                                    @Override
+                                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                                        ImageView childView = new ImageView(MainActivity.this);
+                                        childView.setImageBitmap(resource);
+                                        container.addView(childView);
+                                    }
+
+                                    @Override
+                                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                                    }
+                                });
                         break;
                 }
 
@@ -238,13 +296,51 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
     @Subscribe(threadMode = ThreadMode.MAIN)
     synchronized public void onDZApiCounts(LessonEvent event) {
 
-        Log.e("LessonEvent", "" + event.getStatus());
-        Log.e("LessonEvent", "" + event.getResponse().getStudentA()[0].getLesson());
+     response=event;
 
-        switch (event.getStatus()) {
+    }
 
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+
+        if(response!=null)
+        {
+           switch (position)
+           {
+               case 0:
+                   unit1.setText(response.getResponse().getStudentA()[0].getLesson());
+                   unit2.setText(response.getResponse().getStudentA()[1].getLesson());
+                   unit3.setText(response.getResponse().getStudentA()[2].getLesson());
+                   unit1.setTag(response.getResponse().getStudentA()[0].getColor());
+                   unit2.setTag(response.getResponse().getStudentA()[1].getColor());
+                   unit3.setTag(response.getResponse().getStudentA()[2].getColor());
+                   break;
+
+               case 1:
+                   unit1.setText(response.getResponse().getStudentB()[0].getLesson());
+                   unit2.setText(response.getResponse().getStudentB()[1].getLesson());
+                   unit3.setText(response.getResponse().getStudentB()[2].getLesson());
+                   unit1.setTag(response.getResponse().getStudentB()[0].getColor());
+                   unit2.setTag(response.getResponse().getStudentB()[1].getColor());
+                   unit3.setTag(response.getResponse().getStudentB()[2].getColor());
+                   break;
+
+               case 2:
+                   unit1.setText(response.getResponse().getStudentC()[0].getLesson());
+                   unit2.setText(response.getResponse().getStudentC()[1].getLesson());
+                   unit3.setText(response.getResponse().getStudentC()[2].getLesson());
+                   unit1.setTag(response.getResponse().getStudentC()[0].getColor());
+                   unit2.setTag(response.getResponse().getStudentC()[1].getColor());
+                   unit3.setTag(response.getResponse().getStudentC()[2].getColor());
+                   break;
+           }
         }
 
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
 
     }
 
