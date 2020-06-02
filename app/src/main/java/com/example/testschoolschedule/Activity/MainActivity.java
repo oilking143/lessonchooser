@@ -3,12 +3,9 @@ package com.example.testschoolschedule.Activity;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
@@ -17,8 +14,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,11 +32,6 @@ import com.example.testschoolschedule.model.ApiServer;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,6 +65,8 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
     LinearLayout childTest8;
     @BindView(R.id.studentList)
     AppCompatSpinner studentList;
+    @BindView(R.id.progress)
+    ProgressBar progress;
     private Drawable oldbg;
     private LessonEvent response;
 
@@ -90,7 +84,7 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
     @Override
     public void init() {
         String[] mItems = getResources().getStringArray(R.array.spinnername);
-        ArrayAdapter<String> _Adapter=new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item, mItems);
+        ArrayAdapter<String> _Adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mItems);
         studentList.setAdapter(_Adapter);
         ApiServer.getInstance().getLessonApis();
     }
@@ -296,7 +290,16 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
     @Subscribe(threadMode = ThreadMode.MAIN)
     synchronized public void onDZApiCounts(LessonEvent event) {
 
-     response=event;
+        response = event;
+
+        unit1.setText(response.getResponse().getStudentA()[0].getLesson());
+        unit2.setText(response.getResponse().getStudentA()[1].getLesson());
+        unit3.setText(response.getResponse().getStudentA()[2].getLesson());
+        unit1.setTag(response.getResponse().getStudentA()[0].getColor());
+        unit2.setTag(response.getResponse().getStudentA()[1].getColor());
+        unit3.setTag(response.getResponse().getStudentA()[2].getColor());
+
+        progress.setVisibility(View.GONE);
 
     }
 
@@ -304,37 +307,35 @@ public class MainActivity extends BaseActivity implements View.OnLongClickListen
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
 
-        if(response!=null)
-        {
-           switch (position)
-           {
-               case 0:
-                   unit1.setText(response.getResponse().getStudentA()[0].getLesson());
-                   unit2.setText(response.getResponse().getStudentA()[1].getLesson());
-                   unit3.setText(response.getResponse().getStudentA()[2].getLesson());
-                   unit1.setTag(response.getResponse().getStudentA()[0].getColor());
-                   unit2.setTag(response.getResponse().getStudentA()[1].getColor());
-                   unit3.setTag(response.getResponse().getStudentA()[2].getColor());
-                   break;
+        if (response != null) {
+            switch (position) {
+                case 0:
+                    unit1.setText(response.getResponse().getStudentA()[0].getLesson());
+                    unit2.setText(response.getResponse().getStudentA()[1].getLesson());
+                    unit3.setText(response.getResponse().getStudentA()[2].getLesson());
+                    unit1.setTag(response.getResponse().getStudentA()[0].getColor());
+                    unit2.setTag(response.getResponse().getStudentA()[1].getColor());
+                    unit3.setTag(response.getResponse().getStudentA()[2].getColor());
+                    break;
 
-               case 1:
-                   unit1.setText(response.getResponse().getStudentB()[0].getLesson());
-                   unit2.setText(response.getResponse().getStudentB()[1].getLesson());
-                   unit3.setText(response.getResponse().getStudentB()[2].getLesson());
-                   unit1.setTag(response.getResponse().getStudentB()[0].getColor());
-                   unit2.setTag(response.getResponse().getStudentB()[1].getColor());
-                   unit3.setTag(response.getResponse().getStudentB()[2].getColor());
-                   break;
+                case 1:
+                    unit1.setText(response.getResponse().getStudentB()[0].getLesson());
+                    unit2.setText(response.getResponse().getStudentB()[1].getLesson());
+                    unit3.setText(response.getResponse().getStudentB()[2].getLesson());
+                    unit1.setTag(response.getResponse().getStudentB()[0].getColor());
+                    unit2.setTag(response.getResponse().getStudentB()[1].getColor());
+                    unit3.setTag(response.getResponse().getStudentB()[2].getColor());
+                    break;
 
-               case 2:
-                   unit1.setText(response.getResponse().getStudentC()[0].getLesson());
-                   unit2.setText(response.getResponse().getStudentC()[1].getLesson());
-                   unit3.setText(response.getResponse().getStudentC()[2].getLesson());
-                   unit1.setTag(response.getResponse().getStudentC()[0].getColor());
-                   unit2.setTag(response.getResponse().getStudentC()[1].getColor());
-                   unit3.setTag(response.getResponse().getStudentC()[2].getColor());
-                   break;
-           }
+                case 2:
+                    unit1.setText(response.getResponse().getStudentC()[0].getLesson());
+                    unit2.setText(response.getResponse().getStudentC()[1].getLesson());
+                    unit3.setText(response.getResponse().getStudentC()[2].getLesson());
+                    unit1.setTag(response.getResponse().getStudentC()[0].getColor());
+                    unit2.setTag(response.getResponse().getStudentC()[1].getColor());
+                    unit3.setTag(response.getResponse().getStudentC()[2].getColor());
+                    break;
+            }
         }
 
     }
